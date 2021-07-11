@@ -14,6 +14,7 @@ import ru.kpfu.itis.repositories.LessonsRepositoryJdbcTemplateImpl;
 import javax.sql.DataSource;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class Main {
         Properties properties = new Properties();
 
         try {
-            properties.load(new FileReader("src\\main\\resources\\application.properties"));
+            properties.load(ClassLoader.getSystemResourceAsStream("application.properties"));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -41,7 +42,7 @@ public class Main {
         DataSource dataSource = new HikariDataSource(config);
 
         checkWorkOfCoursesRep(dataSource);
-        checkWorkOfLessonsRep(dataSource);
+        //checkWorkOfLessonsRep(dataSource);
     }
 
     public static void checkWorkOfCoursesRep(DataSource dataSource) {
@@ -56,18 +57,20 @@ public class Main {
 
         Course course5 = new Course("Курс5", "09.02.21", "28.05.21", teacher1, listOfStudentsOnC5);
         coursesRep.save(course5);
-        System.out.println(course5.getId());
 
         Teacher teacher2 = new Teacher(2, "Преподаватель2", "Фам2", 10);
         course5.setTeacher(teacher2);
         coursesRep.update(course5);
 
+        System.out.println("Find by id = 5: ");
         System.out.println(coursesRep.findById(5).get());
 
+        System.out.println("Find all by name = Курс4: ");
         for (Course course : coursesRep.findAllByName("Курс4")) {
             System.out.println(course);
         }
 
+        System.out.println("Find all: ");
         for (Course course : coursesRep.findAll()) {
             System.out.println(course);
         }
@@ -87,12 +90,15 @@ public class Main {
         l1.setTime("ЧТ 08.07.21");
         lesRep.update(l1);
 
+        System.out.println("Find by id = 1: ");
         System.out.println(lesRep.findById(1).get());
 
+        System.out.println("Find all by name = Урок1 тема1: ");
         for (Lesson lesson : lesRep.findAllByName("Урок1 тема1")) {
             System.out.println(lesson);
         }
 
+        System.out.println("Find all: ");
         for (Lesson lesson : lesRep.findAll()) {
             System.out.println(lesson);
         }
